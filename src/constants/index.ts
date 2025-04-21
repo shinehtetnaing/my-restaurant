@@ -33,3 +33,21 @@ export const user = {
   email: "m@example.com",
   avatar: "/avatars/shadcn.jpg",
 };
+
+export const category = [
+  {
+    id: "728ed52f",
+    name: "Category 1",
+    total: 10,
+  },
+  {
+    id: "728ed52f",
+    name: "Category 2",
+    total: 20,
+  },
+  {
+    id: "728ed52f",
+    name: "Category 3",
+    total: 30,
+  },
+];
