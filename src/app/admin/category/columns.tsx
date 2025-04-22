@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import Link from "next/link";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -60,8 +61,12 @@ export const columns: ColumnDef<Category>[] = [
               >
                 Copy ID
               </DropdownMenuItem>
-              <DropdownMenuItem>View</DropdownMenuItem>
-              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <Link href={`/admin/category/${category.id}`}>
+                <DropdownMenuItem>View</DropdownMenuItem>
+              </Link>
+              <Link href={`/admin/category/${category.id}/edit`}>
+                <DropdownMenuItem>Edit</DropdownMenuItem>
+              </Link>
               <DropdownMenuSeparator />
               <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
             </DropdownMenuContent>

@@ -11,8 +11,8 @@ export default async function AdminCategoryPage() {
   const data = await getData();
 
   return (
-    <div>
-      <DataTable columns={columns} data={data} />
-    </div>
+    <section>
+      <DataTable columns={columns} data={data} link="/admin/category/create" />
+    </section>
   );
 }

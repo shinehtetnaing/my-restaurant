@@ -30,18 +30,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChevronDownIcon, ColumnsIcon } from "lucide-react";
+import { ChevronDownIcon, ColumnsIcon, PlusCircleIcon } from "lucide-react";
 import { useState } from "react";
 import DataTablePagination from "../admin/DataTablePagination";
+import Link from "next/link";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  link: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  link,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -66,7 +69,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex items-center justify-between py-4">
         <Input
           placeholder="Filter category name..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
@@ -76,35 +79,47 @@ export function DataTable<TData, TValue>({
           className="max-w-sm focus-visible:ring-0"
         />
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto focus-visible:ring-0">
-              <ColumnsIcon />
-              <span className="hidden lg:inline">Customize Columns</span>
-              <span className="lg:hidden">Columns</span>
-              <ChevronDownIcon />
+        <div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="ml-auto focus-visible:ring-0"
+              >
+                <ColumnsIcon />
+                <span className="hidden lg:inline">Customize Columns</span>
+                <span className="lg:hidden">Columns</span>
+                <ChevronDownIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              {table
+                .getAllColumns()
+                .filter((column) => column.getCanHide())
+                .map((column) => {
+                  return (
+                    <DropdownMenuCheckboxItem
+                      key={column.id}
+                      className="capitalize"
+                      checked={column.getIsVisible()}
+                      onCheckedChange={(value) =>
+                        column.toggleVisibility(!!value)
+                      }
+                    >
+                      {column.id}
+                    </DropdownMenuCheckboxItem>
+                  );
+                })}
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Link href={link}>
+            <Button variant="outline" className="ml-3 focus-visible:ring-0">
+              <PlusCircleIcon />
+              <span className="hidden lg:inline">Add</span>
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                );
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+          </Link>
+        </div>
       </div>
 
       <div className="rounded-md border">
