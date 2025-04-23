@@ -33,7 +33,9 @@ const NavMain = ({
                   tooltip={item.title}
                   size={"lg"}
                   className={`cursor-pointer ${
-                    pathname === item.url &&
+                    pathname
+                      .replace(/\/$/, "")
+                      .startsWith(item.url.replace(/\/$/, "")) &&
                     "bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground active:bg-primary/90 active:text-primary-foreground duration-200 ease-linear"
                   }`}
                 >
