@@ -43,6 +43,38 @@ export const getCategories = async () => {
   }
 };
 
+export const getCategory = async (id: string) => {
+  try {
+    const category = await prisma.category.findUnique({
+      where: { id },
+      include: {
+        _count: {
+          select: { menus: true },
+        },
+      },
+    });
+
+    if (!category) {
+      return {
+        success: false,
+        message: "Category not found",
+      };
+    }
+
+    return {
+      success: true,
+      message: "Category fetched successfully",
+      data: JSON.parse(JSON.stringify(category)),
+    };
+  } catch (error) {
+    console.error("Error fetching category:", error);
+    return {
+      success: false,
+      message: "Failed to fetch category",
+    };
+  }
+};
+
 export const createCategory = async (params: CategoryParams) => {
   const parsed = categorySchema.safeParse(params);
   if (!parsed.success) {
