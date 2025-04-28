@@ -1,3 +1,4 @@
+import DeleteConfirmationDialog from "@/components/admin/DeleteConfirmationDialog";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,10 +8,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { getCategory } from "@/lib/actions/category";
 import { format } from "date-fns";
-import { CalendarIcon, ChevronLeft, Pencil, UtensilsIcon } from "lucide-react";
+import {
+  CalendarIcon,
+  ChevronLeft,
+  Pencil,
+  Trash2,
+  UtensilsIcon,
+} from "lucide-react";
 import Link from "next/link";
 
 export default async function AdminCategoryDetailsPage({
@@ -37,6 +45,16 @@ export default async function AdminCategoryDetailsPage({
             <span className="hidden md:inline">Edit Category</span>
             <span className="md:hidden">Edit</span>
           </Button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="destructive">
+                <Trash2 className="size-4" />
+                <span className="hidden md:inline">Delete Category</span>
+                <span className="md:hidden">Delete</span>
+              </Button>
+            </DialogTrigger>
+            <DeleteConfirmationDialog type="Category" id={id} />
+          </Dialog>
         </div>
       </div>
 

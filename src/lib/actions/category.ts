@@ -106,3 +106,44 @@ export const createCategory = async (params: CategoryParams) => {
     };
   }
 };
+
+export const deleteCategory = async (
+  id: string,
+): Promise<{
+  success: boolean;
+  message: string;
+  data?: unknown;
+}> => {
+  try {
+    // throw new Error("simulated error"); // Simulate an error for testing
+
+    const excitingCategory = await prisma.category.findUnique({
+      where: { id },
+    });
+
+    if (!excitingCategory) {
+      return {
+        success: false,
+        message: "Category not found",
+      };
+    }
+
+    const category = await prisma.category.delete({
+      where: { id },
+    });
+
+    revalidatePath("/admin/category");
+
+    return {
+      success: true,
+      message: "Category deleted successfully",
+      data: JSON.parse(JSON.stringify(category)),
+    };
+  } catch (error) {
+    console.error("Error deleting category:", error);
+    return {
+      success: false,
+      message: "Failed to delete category",
+    };
+  }
+};
