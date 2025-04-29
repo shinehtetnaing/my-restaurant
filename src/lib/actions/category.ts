@@ -4,11 +4,15 @@ import prisma from "@/lib/prisma";
 import { categorySchema } from "@/lib/validations";
 import { revalidatePath } from "next/cache";
 
-export const getCategories = async () => {
+export const getCategories = async (page = 1, pageSize = 10) => {
   try {
+    const skip = (page - 1) * pageSize;
+
     const categories = await prisma.category.findMany({
+      skip,
+      take: pageSize,
       orderBy: {
-        name: "asc",
+        createdAt: "desc",
       },
     });
 
@@ -16,6 +20,10 @@ export const getCategories = async () => {
       by: ["categoryId"],
       _count: { _all: true },
     });
+
+    const totalCount = await prisma.category.count();
+
+    const totalPage = Math.ceil(totalCount / pageSize);
 
     // Build a map of categoryId → count
     const countMap = counts.reduce<Record<string, number>>((map, row) => {
@@ -33,6 +41,7 @@ export const getCategories = async () => {
       success: true,
       message: "Categories fetched successfully",
       data: JSON.parse(JSON.stringify(result)),
+      page: totalPage,
     };
   } catch (error) {
     console.error("Error fetching categories:", error);

@@ -6,7 +6,6 @@ import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   SortingState,
   useReactTable,
@@ -31,41 +30,70 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ChevronDownIcon, ColumnsIcon, PlusCircleIcon } from "lucide-react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import DataTablePagination from "../admin/DataTablePagination";
-import Link from "next/link";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
   link: string;
+  page: number;
+  pageSize: number;
+  pageCount?: number;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   link,
+  page,
+  pageSize,
+  pageCount,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
+  const router = useRouter();
+  const pathname = usePathname();
+
   const table = useReactTable({
     data,
     columns,
+    manualPagination: true,
+    pageCount: pageCount,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     state: {
+      pagination: {
+        pageIndex: page - 1,
+        pageSize: pageSize,
+      },
       sorting,
       columnFilters,
       columnVisibility,
     },
   });
+
+  const handlePageChange = (newPage: number) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", String(newPage));
+    params.set("pageSize", String(pageSize));
+    router.push(`${pathname}?${params.toString()}`);
+  };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", "1"); // Reset to page 1
+    params.set("pageSize", String(newPageSize));
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   return (
     <div>
@@ -173,7 +201,11 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <DataTablePagination table={table} />
+      <DataTablePagination
+        table={table}
+        onPageChange={handlePageChange}
+        onPageSizeChange={handlePageSizeChange}
+      />
     </div>
   );
 }

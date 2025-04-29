@@ -17,14 +17,19 @@ import {
 
 interface DataTablePaginationProps<TData> {
   table: Table<TData>;
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (pageSize: number) => void;
 }
 
 const DataTablePagination = <TData,>({
   table,
+  onPageChange,
+  onPageSizeChange,
 }: DataTablePaginationProps<TData>) => {
   return (
     <div className="flex items-center justify-between px-2 py-4">
       <div className="text-muted-foreground flex-1 text-sm">
+        Total row(s) {table.getFilteredRowModel().rows.length}
         {/* {table.getFilteredSelectedRowModel().rows.length} of{" "}
         {table.getFilteredRowModel().rows.length} row(s) selected. */}
       </div>
@@ -34,7 +39,7 @@ const DataTablePagination = <TData,>({
           <Select
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
-              table.setPageSize(Number(value));
+              onPageSizeChange(Number(value));
             }}
           >
             <SelectTrigger className="h-8 w-[70px] focus-visible:ring-0">
@@ -57,8 +62,8 @@ const DataTablePagination = <TData,>({
           <Button
             variant="outline"
             className="hidden h-8 w-8 p-0 lg:flex"
-            onClick={() => table.setPageIndex(0)}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => onPageChange(1)}
+            disabled={table.getState().pagination.pageIndex === 0}
           >
             <span className="sr-only">Go to first page</span>
             <ChevronsLeft />
@@ -66,8 +71,8 @@ const DataTablePagination = <TData,>({
           <Button
             variant="outline"
             className="h-8 w-8 p-0"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
+            onClick={() => onPageChange(table.getState().pagination.pageIndex)}
+            disabled={table.getState().pagination.pageIndex === 0}
           >
             <span className="sr-only">Go to previous page</span>
             <ChevronLeft />
@@ -75,8 +80,12 @@ const DataTablePagination = <TData,>({
           <Button
             variant="outline"
             className="h-8 w-8 p-0"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
+            onClick={() =>
+              onPageChange(table.getState().pagination.pageIndex + 2)
+            }
+            disabled={
+              table.getState().pagination.pageIndex + 1 >= table.getPageCount()
+            }
           >
             <span className="sr-only">Go to next page</span>
             <ChevronRight />
@@ -84,8 +93,10 @@ const DataTablePagination = <TData,>({
           <Button
             variant="outline"
             className="hidden h-8 w-8 p-0 lg:flex"
-            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
-            disabled={!table.getCanNextPage()}
+            onClick={() => onPageChange(table.getPageCount())}
+            disabled={
+              table.getState().pagination.pageIndex + 1 >= table.getPageCount()
+            }
           >
             <span className="sr-only">Go to last page</span>
             <ChevronsRight />
