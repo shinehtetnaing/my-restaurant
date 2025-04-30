@@ -52,7 +52,13 @@ export const getCategories = async (page = 1, pageSize = 10) => {
   }
 };
 
-export const getCategory = async (id: string) => {
+export const getCategory = async (
+  id: string,
+): Promise<{
+  success: boolean;
+  message: string;
+  data?: CategoryWithCount;
+}> => {
   try {
     const category = await prisma.category.findUnique({
       where: { id },
@@ -84,6 +90,38 @@ export const getCategory = async (id: string) => {
   }
 };
 
+export const updateCategory = async (id: string, params: CategoryParams) => {
+  const parsed = categorySchema.safeParse(params);
+  if (!parsed.success) {
+    throw new Error("Invalid data");
+  }
+
+  const { name } = parsed.data;
+
+  try {
+    const category = await prisma.category.update({
+      where: { id },
+      data: {
+        name,
+      },
+    });
+
+    revalidatePath("/admin/category");
+
+    return {
+      success: true,
+      message: "Category updated successfully",
+      data: JSON.parse(JSON.stringify(category)),
+    };
+  } catch (error) {
+    console.error("Error updating category:", error);
+    return {
+      success: false,
+      message: "Failed to update category",
+    };
+  }
+};
+
 export const createCategory = async (params: CategoryParams) => {
   const parsed = categorySchema.safeParse(params);
   if (!parsed.success) {
@@ -108,7 +146,6 @@ export const createCategory = async (params: CategoryParams) => {
     };
   } catch (error) {
     console.error("Error creating category:", error);
-
     return {
       success: false,
       message: "Failed to create category",

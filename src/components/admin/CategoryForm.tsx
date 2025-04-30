@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-import { createCategory } from "@/lib/actions/category";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -16,21 +15,33 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { createCategory, updateCategory } from "@/lib/actions/category";
+import { Prisma } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-const CategoryForm = () => {
+type CategoryWithCount = Prisma.CategoryGetPayload<{
+  include: {
+    _count: {
+      select: { menus: true };
+    };
+  };
+}>;
+
+const CategoryForm = ({ data }: { data?: CategoryWithCount }) => {
   const router = useRouter();
 
   const form = useForm<z.infer<typeof categorySchema>>({
     resolver: zodResolver(categorySchema),
     defaultValues: {
-      name: "",
+      name: data?.name ?? "",
     },
   });
 
   async function onSubmit(values: z.infer<typeof categorySchema>) {
-    const result = await createCategory(values);
+    const result = data
+      ? await updateCategory(data.id, values)
+      : await createCategory(values);
 
     if (result.success) {
       toast.success(result.message);
@@ -63,7 +74,7 @@ const CategoryForm = () => {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit">{data ? "Update" : "Submit"}</Button>
         </form>
       </Form>
     </div>
