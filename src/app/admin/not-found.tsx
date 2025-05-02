@@ -10,7 +10,7 @@ import {
 import { FileQuestion } from "lucide-react";
 import Link from "next/link";
 
-export default function CategoryNotFound() {
+export default function AdminNotFound() {
   return (
     <section className="py-4">
       <div className="container">
@@ -22,22 +22,22 @@ export default function CategoryNotFound() {
               </div>
             </div>
             <CardTitle className="text-center text-2xl">
-              Category Not Found
+              Page Not Found
             </CardTitle>
             <CardDescription className="text-center">
-              The category you&apos;re looking for doesn&apos;t exist or has
-              been removed.
+              The page you&apos;re looking for doesn&apos;t exist or has been
+              moved.
             </CardDescription>
           </CardHeader>
           <CardContent className="pb-2 text-center">
             <p className="text-muted-foreground">
-              Please check the category ID and try again, or return to the
-              categories list.
+              Please check the URL and try again, or navigate to another
+              section.
             </p>
           </CardContent>
           <CardFooter className="flex justify-center pt-2">
             <Button asChild>
-              <Link href="/admin/category">Back to Category</Link>
+              <Link href="/admin/dashboard">Back to Dashboard</Link>
             </Button>
           </CardFooter>
         </Card>
