@@ -71,7 +71,7 @@ export const getCategory = async (
 
     if (!category) {
       return {
-        success: false,
+        success: true,
         message: "Category not found",
       };
     }

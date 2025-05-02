@@ -1,4 +1,4 @@
-import DeleteConfirmationDialog from "@/components/admin/DeleteConfirmationDialog";
+import ActionBar from "@/components/admin/ActionBar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,18 +8,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { getCategory } from "@/lib/actions/category";
 import { format } from "date-fns";
-import {
-  CalendarIcon,
-  ChevronLeft,
-  Pencil,
-  Trash2,
-  UtensilsIcon,
-} from "lucide-react";
-import Link from "next/link";
+import { CalendarIcon, UtensilsIcon } from "lucide-react";
+import { notFound } from "next/navigation";
 
 export default async function AdminCategoryDetailsPage({
   params,
@@ -29,38 +22,21 @@ export default async function AdminCategoryDetailsPage({
   const { id } = await params;
   const result = await getCategory(id);
 
+  if (!result.success) {
+    throw new Error(result.message);
+  }
+
+  if (result.success && !result.data) {
+    notFound();
+  }
+
   return (
     <section className="space-y-6 py-4">
-      <div className="flex items-center justify-between">
-        <Button variant="ghost" size="sm" className="-ml-2 gap-1" asChild>
-          <Link href="/admin/category">
-            <ChevronLeft className="size-4" />
-            <span className="hidden md:inline">Back to Category</span>
-            <span className="md:hidden">Back</span>
-          </Link>
-        </Button>
-        <div className="flex items-center gap-2">
-          <Button>
-            <Pencil className="size-4" />
-            <span className="hidden md:inline">Edit Category</span>
-            <span className="md:hidden">Edit</span>
-          </Button>
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="destructive">
-                <Trash2 className="size-4" />
-                <span className="hidden md:inline">Delete Category</span>
-                <span className="md:hidden">Delete</span>
-              </Button>
-            </DialogTrigger>
-            <DeleteConfirmationDialog type="Category" id={id} />
-          </Dialog>
-        </div>
-      </div>
+      <ActionBar detailPage type="Category" link="/admin/category" id={id} />
 
       <div className="space-y-1 px-1">
         <h1 className="text-3xl font-bold tracking-tight">
-          {result.data.name}
+          {result.data?.name}
         </h1>
         <p className="text-muted-foreground">
           Category details and information
@@ -78,11 +54,11 @@ export default async function AdminCategoryDetailsPage({
           <CardContent className="space-y-4">
             <div className="space-y-1">
               <p className="text-muted-foreground text-sm font-medium">ID</p>
-              <p className="font-mono text-sm">{result.data.id}</p>
+              <p className="font-mono text-sm">{result.data?.id}</p>
             </div>
             <div className="space-y-1">
               <p className="text-muted-foreground text-sm font-medium">Name</p>
-              <p>{result.data.name}</p>
+              <p>{result.data?.name}</p>
             </div>
           </CardContent>
         </Card>
@@ -103,13 +79,15 @@ export default async function AdminCategoryDetailsPage({
                 <p className="text-muted-foreground text-sm font-medium">
                   Menus
                 </p>
-                <p className="text-2xl font-bold">{result.data._count.menus}</p>
+                <p className="text-2xl font-bold">
+                  {result.data?._count.menus}
+                </p>
               </div>
             </div>
           </CardContent>
           <CardFooter>
             <Button variant="outline" className="w-full" asChild>
-              <a href={`/categories/${result.data.id}/menus`}>View Menus</a>
+              <a href={`/categories/${result.data?.id}/menus`}>View Menus</a>
             </Button>
           </CardFooter>
         </Card>
@@ -128,7 +106,8 @@ export default async function AdminCategoryDetailsPage({
             <div>
               <p className="font-medium">Created</p>
               <p className="text-muted-foreground text-sm">
-                {format(new Date(result.data.createdAt), "PPP 'at' p")}
+                {result.data?.createdAt &&
+                  format(new Date(result.data.createdAt), "PPP 'at' p")}
               </p>
             </div>
           </div>
@@ -140,7 +119,8 @@ export default async function AdminCategoryDetailsPage({
             <div>
               <p className="font-medium">Last Updated</p>
               <p className="text-muted-foreground text-sm">
-                {format(new Date(result.data.updatedAt), "PPP 'at' p")}
+                {result.data?.updatedAt &&
+                  format(new Date(result.data.updatedAt), "PPP 'at' p")}
               </p>
             </div>
           </div>
