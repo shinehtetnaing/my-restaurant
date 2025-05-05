@@ -17,6 +17,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { createCategory, updateCategory } from "@/lib/actions/category";
 import { Prisma } from "@prisma/client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -45,7 +46,6 @@ const CategoryForm = ({ data }: { data?: CategoryWithCount }) => {
 
     if (result.success) {
       toast.success(result.message);
-      form.reset();
 
       router.push("/admin/category");
     } else {
@@ -74,7 +74,27 @@ const CategoryForm = ({ data }: { data?: CategoryWithCount }) => {
               </FormItem>
             )}
           />
-          <Button type="submit">{data ? "Update" : "Submit"}</Button>
+
+          <div className="flex gap-3">
+            <Link onNavigate={() => router.back()} href="">
+              <Button size="lg" variant="secondary">
+                Cancel
+              </Button>
+            </Link>
+            <Button
+              size="lg"
+              type="submit"
+              disabled={form.formState.isSubmitting}
+            >
+              {data
+                ? form.formState.isSubmitting
+                  ? "Updating"
+                  : "Update"
+                : form.formState.isSubmitting
+                  ? "Submitting"
+                  : "Submit"}
+            </Button>
+          </div>
         </form>
       </Form>
     </div>
