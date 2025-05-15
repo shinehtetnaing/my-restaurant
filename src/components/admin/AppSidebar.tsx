@@ -9,12 +9,20 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { navMain, user } from "@/constants";
+import { navMain } from "@/constants";
+import { useUser } from "@clerk/nextjs";
 import { StoreIcon } from "lucide-react";
 import NavMain from "./NavMain";
 import NavUser from "./NavUser";
 
 const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
+  const { user } = useUser();
+  const userData = {
+    name: user?.fullName,
+    email: user?.emailAddresses[0]?.emailAddress,
+    avatar: user?.imageUrl,
+  };
+
   return (
     <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
@@ -38,7 +46,7 @@ const AppSidebar = ({ ...props }: React.ComponentProps<typeof Sidebar>) => {
       </SidebarContent>
 
       <SidebarFooter>
-        <NavUser user={user} />
+        <NavUser user={userData} />
       </SidebarFooter>
     </Sidebar>
   );
