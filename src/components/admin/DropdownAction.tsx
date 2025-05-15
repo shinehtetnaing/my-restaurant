@@ -33,20 +33,30 @@ const DropdownAction = ({ category }: { category: { id: string } }) => {
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem
+              className="cursor-pointer"
               onClick={() => navigator.clipboard.writeText(category.id)}
             >
               Copy ID
             </DropdownMenuItem>
             <Link href={`/admin/category/${category.id}`}>
-              <DropdownMenuItem>View</DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                View
+              </DropdownMenuItem>
             </Link>
             <Link href={`/admin/category/${category.id}/edit`}>
-              <DropdownMenuItem>Edit</DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer">
+                Edit
+              </DropdownMenuItem>
             </Link>
             <DropdownMenuSeparator />
 
             <DialogTrigger asChild>
-              <DropdownMenuItem variant="destructive">Delete</DropdownMenuItem>
+              <DropdownMenuItem
+                variant="destructive"
+                className="cursor-pointer"
+              >
+                Delete
+              </DropdownMenuItem>
             </DialogTrigger>
           </DropdownMenuContent>
         </DropdownMenu>

@@ -77,7 +77,7 @@ const CategoryForm = ({ data }: { data?: CategoryWithCount }) => {
 
           <div className="flex gap-3">
             <Link onNavigate={() => router.back()} href="">
-              <Button size="lg" variant="secondary">
+              <Button size="lg" variant="secondary" className="cursor-pointer">
                 Cancel
               </Button>
             </Link>
@@ -85,6 +85,7 @@ const CategoryForm = ({ data }: { data?: CategoryWithCount }) => {
               size="lg"
               type="submit"
               disabled={form.formState.isSubmitting}
+              className="cursor-pointer"
             >
               {data
                 ? form.formState.isSubmitting

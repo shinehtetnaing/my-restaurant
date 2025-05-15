@@ -141,12 +141,16 @@ export function DataTable<TData, TValue>({
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link href={link}>
-            <Button variant="outline" className="ml-3 focus-visible:ring-0">
+          <Button
+            variant="outline"
+            className="ml-3 focus-visible:ring-0"
+            asChild
+          >
+            <Link href={link}>
               <PlusCircleIcon />
               <span className="hidden lg:inline">Add</span>
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </div>
       </div>
 

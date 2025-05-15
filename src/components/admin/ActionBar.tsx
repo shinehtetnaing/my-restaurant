@@ -32,7 +32,7 @@ const ActionBar = ({ detailPage, type, link, id }: ActionBarProps) => {
           </Button>
           <Dialog>
             <DialogTrigger asChild>
-              <Button variant="destructive">
+              <Button variant="destructive" className="cursor-pointer">
                 <Trash2 className="size-4" />
                 <span className="hidden md:inline">Delete {type}</span>
                 <span className="md:hidden">Delete</span>

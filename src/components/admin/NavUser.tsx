@@ -44,7 +44,7 @@ const NavUser = ({
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size="lg"
-              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground focus-visible:ring-0"
+              className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer focus-visible:ring-0"
             >
               <Avatar className="h-8 w-8 rounded-lg">
                 <AvatarImage src={user.avatar} alt="profile image" />
@@ -81,7 +81,10 @@ const NavUser = ({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem onClick={() => openUserProfile()}>
+              <DropdownMenuItem
+                onClick={() => openUserProfile()}
+                className="cursor-pointer"
+              >
                 <UserCircleIcon />
                 Account
               </DropdownMenuItem>
@@ -95,7 +98,10 @@ const NavUser = ({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut()}>
+            <DropdownMenuItem
+              onClick={() => signOut()}
+              className="cursor-pointer"
+            >
               <LogOutIcon />
               Log out
             </DropdownMenuItem>

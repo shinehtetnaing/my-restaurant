@@ -75,7 +75,7 @@ const DeleteConfirmationDialog = ({
           <Button
             variant="outline"
             disabled={isPending}
-            className="focus-visible:ring-0"
+            className="cursor-pointer focus-visible:ring-0"
           >
             Cancel
           </Button>
@@ -84,6 +84,7 @@ const DeleteConfirmationDialog = ({
           variant="destructive"
           onClick={handleDelete}
           disabled={isPending}
+          className="cursor-pointer"
         >
           {isPending ? "Deleting..." : "Yes, I'm sure"}
         </Button>
