@@ -124,6 +124,10 @@
 
 @layer utilities {
   .input {
-    @apply mt-3 h-12 focus-visible:ring-0
+    @apply mt-3 !h-12 focus-visible:ring-0
+  }
+
+  .textarea {
+    @apply mt-3 !h-32 focus-visible:ring-0
   }
 }
