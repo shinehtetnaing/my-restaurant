@@ -2,18 +2,17 @@
 
 import DataTableColumnHeader from "@/components/admin/DataTableColumnHeader";
 import DropdownAction from "@/components/admin/DropdownAction";
+import { Category, Menu } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
 
-export type Category = {
-  id: string;
-  name: string;
-  total: number;
+export type MenuWithCategory = Menu & {
+  category: Category;
 };
 
-export const columns: ColumnDef<Category>[] = [
+export const columns: ColumnDef<MenuWithCategory>[] = [
   {
     accessorKey: "name",
     header: ({ column }) => (
@@ -50,6 +49,9 @@ export const columns: ColumnDef<Category>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Category" />
     ),
+    cell: ({ row }) => {
+      return row.original.category?.name ?? "—";
+    },
   },
   {
     id: "actions",

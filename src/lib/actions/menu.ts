@@ -20,7 +20,7 @@ export const getMenus = async (page = 1, pageSize = 10) => {
       },
     });
 
-    const totalCount = await prisma.category.count();
+    const totalCount = await prisma.menu.count();
 
     const totalPage = Math.ceil(totalCount / pageSize);
 
