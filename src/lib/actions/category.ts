@@ -27,7 +27,9 @@ export const getCategories = async (page = 1, pageSize = 10) => {
 
     // Build a map of categoryId → count
     const countMap = counts.reduce<Record<string, number>>((map, row) => {
-      map[row.categoryId] = row._count._all;
+      if (typeof row.categoryId === "string") {
+        map[row.categoryId] = row._count._all;
+      }
       return map;
     }, {});
 
