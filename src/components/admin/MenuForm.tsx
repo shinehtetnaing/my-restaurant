@@ -19,11 +19,13 @@ import { menuSchema } from "@/lib/validations";
 import { Category } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useRef } from "react";
 import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
 import CategorySelectBox from "./CategorySelectBox";
 
 const MenuForm = ({ categories }: { categories: Category[] }) => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof menuSchema>>({
@@ -32,7 +34,7 @@ const MenuForm = ({ categories }: { categories: Category[] }) => {
       name: "",
       description: "",
       price: 0,
-      imageUrl: "",
+      image: fileInputRef.current?.files?.[0],
       categoryId: "",
     },
   });
@@ -47,13 +49,12 @@ const MenuForm = ({ categories }: { categories: Category[] }) => {
     } else {
       toast.error(result.message);
     }
-    console.log(values);
   }
   return (
     <div className="py-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-          <div className="flex gap-8 max-md:flex-col">
+          <div className="flex items-start gap-8 max-md:flex-col">
             <FormField
               control={form.control}
               name="name"
@@ -90,19 +91,23 @@ const MenuForm = ({ categories }: { categories: Category[] }) => {
             />
           </div>
 
-          <div className="flex gap-8 max-md:flex-col">
+          <div className="flex items-start gap-8 max-md:flex-col">
             <FormField
               control={form.control}
-              name="imageUrl"
+              name="image"
               render={({ field }) => (
                 <FormItem className="w-full">
                   <FormLabel>Menu Image</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter menu image"
-                      {...field}
                       type="file"
                       className="input"
+                      ref={fileInputRef}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] ?? null;
+                        field.onChange(file);
+                      }}
                     />
                   </FormControl>
                   <FormMessage />

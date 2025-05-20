@@ -16,13 +16,28 @@ export const menuSchema = z.object({
   }),
   description: z.string().trim().optional(),
   price: z.coerce
-    .number()
-    .int()
+    .number({ message: "Menu price must be a number" })
     .positive({ message: "Menu price must be greater than 0" }),
-  imageUrl: z
+  image: z
+    .instanceof(File, { message: "Menu image is required" })
+    .refine(
+      (file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type),
+      {
+        message: "Only JPEG, PNG, and WEBP files are allowed",
+      },
+    )
+    .refine((file) => file.size <= 5 * 1024 * 1024, {
+      message: "Image must be smaller than 5MB",
+    }),
+  categoryId: z
     .string()
     .trim()
-    .min(1, { message: "Menu image is required" })
-    .url(),
-  categoryId: z.string().trim().uuid().optional(),
+    .transform((val) => (val === "" ? undefined : val))
+    .optional()
+    .refine(
+      (val) => val === undefined || z.string().uuid().safeParse(val).success,
+      {
+        message: "Invalid category ID",
+      },
+    ),
 });
