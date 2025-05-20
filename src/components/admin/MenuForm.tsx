@@ -17,15 +17,18 @@ import { Input } from "@/components/ui/input";
 import { createMenu } from "@/lib/actions/menu";
 import { menuSchema } from "@/lib/validations";
 import { Category } from "@prisma/client";
+import { X } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { toast } from "sonner";
 import { Textarea } from "../ui/textarea";
 import CategorySelectBox from "./CategorySelectBox";
 
 const MenuForm = ({ categories }: { categories: Category[] }) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const router = useRouter();
 
   const form = useForm<z.infer<typeof menuSchema>>({
@@ -92,28 +95,63 @@ const MenuForm = ({ categories }: { categories: Category[] }) => {
           </div>
 
           <div className="flex items-start gap-8 max-md:flex-col">
-            <FormField
-              control={form.control}
-              name="image"
-              render={({ field }) => (
-                <FormItem className="w-full">
-                  <FormLabel>Menu Image</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter menu image"
-                      type="file"
-                      className="input"
-                      ref={fileInputRef}
-                      onChange={(e) => {
-                        const file = e.target.files?.[0] ?? null;
-                        field.onChange(file);
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+            <div className="w-full">
+              <FormField
+                control={form.control}
+                name="image"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FormLabel>Menu Image</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter menu image"
+                        type="file"
+                        className="input"
+                        ref={fileInputRef}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0] ?? null;
+                          field.onChange(file);
+
+                          if (file) {
+                            const imageUrl = URL.createObjectURL(file);
+                            setPreview(imageUrl);
+                          } else {
+                            setPreview(null);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {preview && (
+                <div className="relative w-fit">
+                  <Image
+                    src={preview}
+                    alt="Preview"
+                    width={200}
+                    height={200}
+                    className="mt-6 h-32 w-full rounded-md object-cover"
+                  />
+                  <button
+                    type="button"
+                    className="absolute -top-3 -right-3 rounded-full bg-red-500 p-1 text-white hover:bg-red-600"
+                    onClick={() => {
+                      setPreview(null);
+                      form.setValue("image", null as unknown as File);
+
+                      if (fileInputRef.current) {
+                        fileInputRef.current.value = "";
+                      }
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
               )}
-            />
+            </div>
+
             <CategorySelectBox form={form} categories={categories} />
           </div>
 

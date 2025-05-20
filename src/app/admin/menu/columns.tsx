@@ -4,6 +4,7 @@ import DataTableColumnHeader from "@/components/admin/DataTableColumnHeader";
 import DropdownAction from "@/components/admin/DropdownAction";
 import { Category, Menu } from "@prisma/client";
 import { ColumnDef } from "@tanstack/react-table";
+import Image from "next/image";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
@@ -37,6 +38,18 @@ export const columns: ColumnDef<MenuWithCategory>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Image" />
     ),
+    cell: ({ row }) => {
+      return (
+        <Image
+          src={row.original.imageUrl}
+          alt="Menu Image"
+          width={100}
+          height={100}
+          className="rounded-md object-cover"
+        />
+      );
+    },
+    enableSorting: false,
   },
   {
     accessorKey: "available",

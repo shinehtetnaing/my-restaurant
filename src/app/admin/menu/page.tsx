@@ -16,7 +16,6 @@ export default async function AdminMenuPage({
   }
 
   const result = await getMenus(page, pageSize);
-  console.log(result);
 
   if (!result.success) {
     throw new Error(result.message);
