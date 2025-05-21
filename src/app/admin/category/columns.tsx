@@ -29,7 +29,9 @@ export const columns: ColumnDef<Category>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DropdownAction category={row.original} />,
+    cell: ({ row }) => (
+      <DropdownAction param={row.original} link="/admin/category" />
+    ),
     enableHiding: false,
   },
 ];

@@ -68,7 +68,9 @@ export const columns: ColumnDef<MenuWithCategory>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DropdownAction category={row.original} />,
+    cell: ({ row }) => (
+      <DropdownAction param={row.original} link="/admin/menu" />
+    ),
     enableHiding: false,
   },
 ];

@@ -14,8 +14,27 @@ import { MoreVerticalIcon } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
-const DropdownAction = ({ category }: { category: { id: string } }) => {
+const DropdownAction = ({
+  param,
+  link,
+}: {
+  param: { id: string };
+  link: string;
+}) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  let type: string;
+  switch (link) {
+    case "/admin/category":
+      type = "Category";
+      break;
+    case "/admin/menu":
+      type = "Menu";
+      break;
+    default:
+      type = "";
+      break;
+  }
 
   return (
     <div className="mr-3 flex items-center justify-end">
@@ -34,16 +53,16 @@ const DropdownAction = ({ category }: { category: { id: string } }) => {
           <DropdownMenuContent align="end">
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => navigator.clipboard.writeText(category.id)}
+              onClick={() => navigator.clipboard.writeText(param.id)}
             >
               Copy ID
             </DropdownMenuItem>
-            <Link href={`/admin/category/${category.id}`}>
+            <Link href={`${link}/${param.id}`}>
               <DropdownMenuItem className="cursor-pointer">
                 View
               </DropdownMenuItem>
             </Link>
-            <Link href={`/admin/category/${category.id}/edit`}>
+            <Link href={`${link}/${param.id}/edit`}>
               <DropdownMenuItem className="cursor-pointer">
                 Edit
               </DropdownMenuItem>
@@ -62,8 +81,8 @@ const DropdownAction = ({ category }: { category: { id: string } }) => {
         </DropdownMenu>
 
         <DeleteConfirmationDialog
-          type="Category"
-          id={category.id}
+          type={type}
+          id={param.id}
           setIsOpen={setIsOpen}
         />
       </Dialog>
