@@ -36,7 +36,9 @@ const DeleteConfirmationDialog = ({
       deleteAction = deleteCategory;
       break;
     default:
-      break;
+      throw new Error(
+        `Unsupported or unimplemented delete action for type: ${type}`,
+      );
   }
 
   const handleDelete = async () => {

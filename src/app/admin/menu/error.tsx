@@ -35,11 +35,9 @@ export default function Error({
                 <AlertTriangle className="h-10 w-10 text-red-600" />
               </div>
             </div>
-            <CardTitle className="text-center text-2xl">
-              Category Error
-            </CardTitle>
+            <CardTitle className="text-center text-2xl">Menu Error</CardTitle>
             <CardDescription className="text-center">
-              We encountered an error while loading the category information.
+              We encountered an error while loading the menu information.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 pb-2 text-center">
