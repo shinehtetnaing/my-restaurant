@@ -165,11 +165,11 @@ export const deleteCategory = async (
   try {
     // throw new Error("simulated error"); // Simulate an error for testing
 
-    const excitingCategory = await prisma.category.findUnique({
+    const existingCategory = await prisma.category.findUnique({
       where: { id },
     });
 
-    if (!excitingCategory) {
+    if (!existingCategory) {
       return {
         success: false,
         message: "Category not found",

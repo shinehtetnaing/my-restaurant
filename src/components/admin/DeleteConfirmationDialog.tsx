@@ -10,6 +10,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { deleteCategory } from "@/lib/actions/category";
+import { deleteMenu } from "@/lib/actions/menu";
 import { useRouter } from "next/navigation";
 import { Dispatch, SetStateAction, useTransition } from "react";
 import { toast } from "sonner";
@@ -34,6 +35,9 @@ const DeleteConfirmationDialog = ({
   switch (type) {
     case "Category":
       deleteAction = deleteCategory;
+      break;
+    case "Menu":
+      deleteAction = deleteMenu;
       break;
     default:
       throw new Error(

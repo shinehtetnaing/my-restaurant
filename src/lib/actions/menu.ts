@@ -1,7 +1,11 @@
 "use server";
 
 import prisma from "@/lib/prisma";
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { menuSchema } from "../validations";
@@ -120,6 +124,65 @@ export const createMenu = async (params: z.infer<typeof menuSchema>) => {
     return {
       success: false,
       message: "Failed to create menu",
+    };
+  }
+};
+
+export const deleteMenu = async (
+  id: string,
+): Promise<{
+  success: boolean;
+  message: string;
+  data?: unknown;
+}> => {
+  try {
+    const existingMenu = await prisma.menu.findUnique({
+      where: { id },
+    });
+
+    if (!existingMenu) {
+      return {
+        success: false,
+        message: "Menu not found",
+      };
+    }
+
+    if (existingMenu.imageUrl) {
+      const imageKey = existingMenu.imageUrl.split("/").pop();
+
+      const deleteParams = {
+        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Key: `menu/${imageKey}`,
+      };
+
+      const deleteResponse = await s3.send(
+        new DeleteObjectCommand(deleteParams),
+      );
+
+      if (deleteResponse.$metadata.httpStatusCode !== 204) {
+        return {
+          success: false,
+          message: "Failed to delete image from S3",
+        };
+      }
+    }
+
+    const menu = await prisma.menu.delete({
+      where: { id },
+    });
+
+    revalidatePath("/admin/menu");
+
+    return {
+      success: true,
+      message: "Menu deleted successfully",
+      data: JSON.parse(JSON.stringify(menu)),
+    };
+  } catch (error) {
+    console.error("Error deleting menu:", error);
+    return {
+      success: false,
+      message: "Failed to delete menu",
     };
   }
 };
